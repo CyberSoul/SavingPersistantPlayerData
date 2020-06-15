@@ -16,6 +16,15 @@ public class CharacterSaveData_SO : ScriptableObject
     int currentLevel = 1;
 
     [SerializeField]
+    int maxLevel = 30;
+
+    [SerializeField]
+    int basisPoints = 200;
+
+    [SerializeField]
+    int pointTillNextLevel;
+    
+    [SerializeField]
     float levelBuff = 0.1f;
 
     public float LevelMultiplier
@@ -31,6 +40,22 @@ public class CharacterSaveData_SO : ScriptableObject
 
     public void AggregateAttackPoints(int points)
     {
+        pointTillNextLevel -= points;
+        if(pointTillNextLevel <= 0)
+        {
+            currentLevel = Mathf.Clamp(currentLevel + 1, 0, maxLevel);
 
+            pointTillNextLevel += (int)(basisPoints * LevelMultiplier);
+
+            Debug.Log($"LELVE UP! NEW level: {currentLevel}");
+        }
+    }
+
+    private void OnEnable()
+    {
+        if (pointTillNextLevel == 0)
+        {
+            pointTillNextLevel = (int)(basisPoints * LevelMultiplier);
+        }
     }
 }
