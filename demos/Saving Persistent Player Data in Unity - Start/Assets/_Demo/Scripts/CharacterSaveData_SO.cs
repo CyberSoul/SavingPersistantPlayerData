@@ -27,6 +27,11 @@ public class CharacterSaveData_SO : ScriptableObject
     [SerializeField]
     float levelBuff = 0.1f;
 
+    [Header("Save Data")]
+    [SerializeField]
+    string key;
+
+
     public float LevelMultiplier
     {
         get { return 1 + (currentLevel - 1) * levelBuff; }
@@ -57,5 +62,18 @@ public class CharacterSaveData_SO : ScriptableObject
         {
             pointTillNextLevel = (int)(basisPoints * LevelMultiplier);
         }
+
+        JsonUtility.FromJsonOverwrite(PlayerPrefs.GetString(key), this);
+    }
+
+    private void OnDisable()
+    {
+        if (key == "")
+        {
+            key = name;
+        }
+        string jsonData = JsonUtility.ToJson(this, true);
+        PlayerPrefs.SetString(key, jsonData);
+        PlayerPrefs.Save();
     }
 }
